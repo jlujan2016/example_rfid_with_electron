@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>ONPE - ANTENAS APP</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-eval' 'unsafe-inline' data: blob:;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="public/vendor/uikit/css/uikit.min.css">
+    <link rel="stylesheet" href="public/styles/main.css">
+    <link rel="stylesheet" href="public/styles/improvements.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* Make Select2 slightly taller and vertically center text to match UIkit inputs */
+        .select2-container--default .select2-selection--single {
+            height: 38px !important;
+            padding: 5px !important;
+            box-sizing: border-box !important;
+            border-radius: 4px !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 24px !important;
+            display: flex !important;
+            align-items: center !important;
+            height: 100% !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 38px !important;
+        }
+
+        .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #173b6a!important;
+        }
+        /* If you only want this for selects that also have uk-select, use: */
+        /* .uk-select + .select2-container--default .select2-selection--single { ... } */
+    </style>
+    <script src="public/js/app-config.js"></script>
+    <script src="public/js/auth.js"></script>
+    <script src="public/js/guard.js"></script>
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- User bar: muestra usuario y logout -->
+    <div id="user-bar" class="user-bar">
+        <div class="user-bar-inner">
+            <div class="user-details">
+                <img class="menu-logo" height="20" src="public/icons/onpe-white.svg" alt=""> <br>
+
+                <span class="user-name" id="user-name"></span>
+                <span class="user-email" id="user-email"></span>
+            </div>
+            <div class="user-actions">
+                <button id="logout-btn" class="uk-button uk-button-default uk-button-small"
+                    onclick="(function(){ try{ if(window.forceLogout) return window.forceLogout(); }catch(e){} try{ localStorage.removeItem('app_session'); localStorage.removeItem('app_user'); }catch(e){} window.location.href='public/login.html'; })()">Cerrar
+                    sesión</button>
+            </div>
+            <div class="top-controls" style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+                <button id="rfid-toggle-btn" class="uk-icon-button uk-button-primary uk-margin-small-right"
+                    uk-icon="play" uk-tooltip="Iniciar/Pausar lecturas RFID"></button>
+                <a href="#modal-readings" uk-toggle class="uk-icon-button uk-margin-small-right" uk-icon="list"
+                    uk-tooltip="Ver historial de lecturas"></a>
+                <a href="#modal-config" uk-toggle class="uk-icon-button" uk-icon="settings"
+                    uk-tooltip="Configuración"></a>
+            </div>
+        </div>
+    </div>
+
+    <section id="punto-control-arco" style="display: none;">
+        <div class="uk-section uk-section-default uk-padding-remove fade-in">
+            <div class="uk-container uk-container-expand uk-flex uk-flex-middle">
+                <div class="uk-margin-small-top-uk-margin-small-bottom uk-width-1-1" style="">
+
+                    <div class="uk-grid-match uk-grid-small uk-flex-middle gap-responsive" uk-grid>
+                        <div class="uk-width-1-1">
+                            <div class="uk-card uk-card-small " id="uk-tag-result-arco"
+                                uk-height-viewport="offset-bottom: 40">
+
+
+                                <div class="uk-grid uk-flex-middle" uk-grid>
+                                  <div class="uk-width-2-5@s">
+                                    <div uk-switcher="connect: .uk-tab-arco" class="uk-tab uk-margin-top">
+                                      <ul class="uk-tab" id="arcos-tabs">
+                                          <li class="uk-active"><a href="#">Tags principales</a></li>
+                                          <li><a href="#">Otros tags</a></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                  <div class="uk-width-3-5@s uk-text-right" id="arcos-indicators-container">
+                                    <div class="uk-flex uk-flex-middle uk-flex-right@l uk-flex-nowrap" style="gap:8px;">
+                                        <div id="arco-correctos" class="uk-label uk-label-success">0
+                                            Correctos</div>
+                                        <div id="arco-incorrectos" class="uk-label uk-label-danger">0
+                                            Incorrectos</div>
+                                        <div id="arco-tags" class="uk-label"
+                                            style="background:#18a0d8;color:#fff;">0 tags</div>
+                                    </div>
+                                  </div>
+                                </div>
+
+
+                                <ul class="uk-switcher uk-margin-remove uk-tab-arco">
+                                    <li>
+                                        <!-- Indicadores de marcaciones (colocados encima de los tabs) -->
+                                        <!-- <div class="uk-margin-small-top uk-margin-small-bottom"
+                                            id="arcos-indicators-container">
+                                            <div class="uk-flex uk-flex-between uk-flex-middle">
+                                                <div class="uk-text-bold">Marcaciones</div>
+                                            </div>
+                                        </div> -->
+                                        <div id="arcos-live-readings" class="uk-margin-small-bottom" style="display:none;">
+                                            <div class="uk-text-meta uk-margin-small-bottom">Escaneo en tiempo real</div>
+                                            <div id="arcos-live-readings-content"></div>
+                                        </div>
+                                        <div class="uk-overflow-auto uk-overflow-table-arco-result">
+                                            <table class="uk-table uk-table-divider uk-table-small uk-table-result-arco"
+                                                id="tabla-arcos-result">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Caja de Material</th>
+                                                        <th>ODPE</th>
+                                                        <th>Local</th>
+                                                        <th>Fecha y Hora</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="uk-overflow-auto uk-overflow-table-arco-result">
+                                            <table class="uk-table uk-table-divider uk-table-small uk-table-result-arco"
+                                                id="tabla-arcos-incorrectos">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Código</th>
+                                                        <th>ODPE</th>
+                                                        <th>Local</th>
+                                                        <th>Fecha y Hora</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="uk-section uk-section-status uk-section-primary uk-light uk-padding-remove fade-in">
+            <div class="uk-container uk-container-expand uk-flex uk-flex-middle" uk-height-viewport="expand: true">
+                <div class="uk-margin-small-top-uk-margin-small-bottom uk-width-1-1 spacing-responsive">
+
+                    <div class="uk-grid-match uk-grid gap-responsive uk-grid-match" uk-grid>
+                        <div class="uk-width-2-5@m">
+                            <div class="uk-general-info ">
+
+                                <div class="uk-text-center">
+                                    <a href="#modal-change-point-arco" class="uk-icon-button" uk-icon="pencil"
+                                        uk-toggle></a>
+                                    <h3 class="uk-margin-remove" id="proceso_electoral-arco"></h3>
+                                </div>
+
+                                <div id="proceso_electoral_descripcion_arco"></div>
+
+
+                                <div class="uk-margin-small-top">
+                                    <div class="uk-grid uk-grid-small uk-flex-middle uk-flex-center" uk-grid>
+                                        <div class="uk-width-auto">
+                                            <span><img class="uk-margin-remove" src="public/icons/icon-rfid.svg"
+                                                    alt=""></span>
+                                        </div>
+                                        <div class="uk-width-auto">
+                                            <span id="progress_arco_text">0 / 0</span>
+                                        </div>
+                                        <div class="uk-width-expand">
+                                            <progress class="uk-progress uk-progress-onpe" value="0" max="100"
+                                                id="progress-bar-arco"></progress>
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="uk-width-3-5@m">
+                            <div class="uk-flex uk-flex-middle">
+                                <div class="uk-width-1-1 ">
+
+                                    <!-- Estado y Progressbar RFID fusionados -->
+                                    <div id="rfid-send-progress-container-print" class="rfid-status-compact"
+                                        style="display: none;">
+                                        <div class="rfid-status-header">
+                                            <div class="rfid-status-info">
+                                                <span class="rfid-status-icon">⏸</span>
+                                                <span class="rfid-status-text">Sistema pausado</span>
+                                            </div>
+                                            <div class="rfid-countdown-info">
+                                                <span class="rfid-countdown-label">Próximo envío:</span>
+                                                <span class="rfid-countdown-time">--</span>
+                                            </div>
+                                        </div>
+                                        <progress class="rfid-progress-bar" value="100" max="100"></progress>
+                                    </div>
+
+
+                                    <div>
+
+                                        <article class="uk-article uk-article-info fade-in">
+
+                                            <h2>
+                                                <img src="public/icons/camion.png" height="25px" alt="">
+                                                <span id="nombre-variable" class="uk-text-uppercase">Control de Impresoras</span>
+                                            </h2>
+
+                                            <div class="uk-grid-small" uk-grid>
+                                                <div class="uk-width-1-2">
+                                                    <label class="uk-form-label">ODPE *</label>
+                                                    <select class="uk-select" id="selectOdpeArco">
+                                                    </select>
+                                                </div>
+
+                                                <div class="uk-width-1-2">
+                                                    <label class="uk-form-label">Local</label>
+                                                    <select class="uk-select" id="selectLocal">
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+                                            <!-- <div class="uk-margin">
+                                                <button class="uk-button uk-button-primary" id="validar-codigos-arcos">Validar Arcos</button>
+                                            </div> -->
+                                        </article>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <section id="punto-control-impresora" style="display: none;">
+        <div class="uk-section uk-section-default uk-padding-remove fade-in">
+            <div class="uk-container uk-container-expand uk-flex uk-flex-middle">
+                <div class="uk-margin-small-top-uk-margin-small-bottom uk-width-1-1 spacing-responsive">
+
+                    <div class="uk-grid-match uk-grid-small uk-flex-middle gap-responsive" uk-grid>
+                        <div class="uk-width-2-5@m">
+                            <article class="uk-article uk-article-info fade-in">
+
+                                <h2>
+                                    <img src="public/icons/print.svg" height="25px" alt="">
+                                    <span>Control de Impresoras</span>
+                                </h2>
+
+                                <div class="uk-grid-small" uk-grid>
+                                    <div class="uk-width-1-1">
+                                        <label class="uk-form-label">ODPE *</label>
+                                        <select class="uk-select" id="selectOdpe">
+                                        </select>
+                                    </div>
+
+                                    <div class="uk-width-1-1">
+                                        <label class="uk-form-label">Variable RFID *</label>
+                                        <select class="uk-select" id="selectVariableRfid">
+                                        </select>
+                                    </div>
+
+                                    <!-- <div class="uk-width-1-1">
+                                        <hr class="uk-divider-icon">
+                                    </div> -->
+
+                                    <div class="uk-width-1-1">
+                                        <label class="uk-form-label">Escanee el <b>Código de barras</b></label>
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon uk-form-icon-image" uk-icon>
+                                                <img height="24" src="public/icons/barcode.png" alt="">
+                                            </span>
+                                            <input class="uk-input input-scan" type="text"
+                                                aria-label="Not clickable icon">
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-1-1">
+                                        <div class="uk-margin ">
+                                            <label><input class="uk-checkbox" type="checkbox"
+                                                    id="antenna-automatic-checkbox"> Validación
+                                                automático</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="uk-margin">
+                                    <button class="uk-button uk-button-primary uk-button-test-barcode"
+                                        id="validar-barcode">Validar</button>
+                                    <!-- <button class="uk-button uk-button-primary uk-button-test-impresion">Rfid de
+                                        prueba</button> -->
+                                    <button class="uk-button uk-button-danger" id="limpiar-datos">Limpiar datos</button>
+
+                                </div>
+
+                            </article>
+                        </div>
+                        <div class="uk-width-3-5@m">
+                            <div class="uk-margin-medium-top">
+                                <div class="uk-margin uk-form-horizontal">
+                                    <label class="uk-form-label" for="form-horizontal-text">Mesas pendientes</label>
+                                    <div class="uk-form-controls uk-grid uk-grid-small" uk-grid>
+                                        <div class="uk-width-1-2@s">
+                                            <select class="uk-select" id="selectOdpeFilters">
+                                                <option>Seleccionar ODPE</option>
+                                            </select>
+                                        </div>
+                                        <div class="uk-width-1-2@s">
+                                            <select class="uk-select" id="selectVariableRfidFilters">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="uk-grid uk-grid-small uk-flex-middle" uk-grid>
+                                    <div class="uk-width-auto">
+                                        <span>0 / 0</span>
+                                    </div>
+                                    <div class="uk-width-expand">
+                                        <progress class="uk-progress uk-progress-onpe-color" value="0" max="100"
+                                            id="progress-bar"></progress>
+                                    </div>
+                                </div>
+
+                                <div class="uk-card uk-card-default uk-card-body uk-card-small uk-card-table">
+
+                                    <div class="uk-overflow-auto uk-height-small">
+                                        <table class="uk-table uk-table-small uk-table-divider">
+                                            <thead>
+                                                <tr>
+                                                    <th>ODPE</th>
+                                                    <th>Variable RFID</th>
+                                                    <th>Número de mesa</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="uk-section uk-section-status uk-section-primary uk-light uk-padding-remove fade-in">
+            <div class="uk-container uk-container-expand uk-flex uk-flex-middle" uk-height-viewport="expand: true">
+                <div class="uk-margin-small-top-uk-margin-small-bottom uk-width-1-1 spacing-responsive">
+
+                    <div class="uk-grid-match uk-grid-small gap-responsive uk-grid-match" uk-grid>
+                        <div class="uk-width-2-5@m">
+                            <div class="uk-general-info uk-text-center">
+                                <img src="public/icons/onpe-white.svg" alt=""> <br>
+                                <a href="#modal-change-ponit-print" class="uk-icon-button" uk-icon="pencil"
+                                    uk-toggle></a>
+                                <h3 class="uk-margin-remove" id="proceso_electoral-impresona"></h3>
+
+                                <div id="proceso_electoral_descripcion_impresora"></div>
+
+
+                                <div class="uk-margin-small-top">
+                                    <div class="uk-grid uk-grid-small uk-flex-middle uk-flex-center" uk-grid>
+                                        <div class="uk-width-auto">
+                                            <span><img class="uk-margin-remove" src="public/icons/icon-rfid.svg"
+                                                    alt=""></span>
+                                        </div>
+                                        <div class="uk-width-auto">
+                                            <span id="progress_rfid_text">0 / 0</span>
+                                        </div>
+                                        <div class="uk-width-expand">
+                                            <progress class="uk-progress uk-progress-onpe" value="0" max="100"
+                                                id="progress-bar-rfid"></progress>
+                                        </div>
+                                    </div>
+
+                                    <div class="uk-grid uk-grid-small uk-flex-middle uk-flex-center" uk-grid>
+                                        <div class="uk-width-auto">
+                                            <span><img class="uk-margin-remove" src="public/icons/icon-barcode.svg"
+                                                    alt=""></span>
+                                        </div>
+                                        <div class="uk-width-auto">
+                                            <span id="progress_barcode_text">0 / 0</span>
+                                        </div>
+                                        <div class="uk-width-expand">
+                                            <progress class="uk-progress uk-progress-onpe" value="0" max="100"
+                                                id="progress-bar-barcode"></progress>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="uk-width-3-5@m">
+                            <div class="uk-flex uk-flex-middle">
+                                <div class="uk-width-1-1 ">
+
+                                    <!-- Estado y Progressbar RFID fusionados -->
+                                    <div id="rfid-send-progress-container-print" class="rfid-status-compact"
+                                        style="display: none;">
+                                        <div class="rfid-status-header">
+                                            <div class="rfid-status-info">
+                                                <span class="rfid-status-icon">⏸</span>
+                                                <span class="rfid-status-text">Sistema pausado</span>
+                                            </div>
+                                            <div class="rfid-countdown-info">
+                                                <span class="rfid-countdown-label">Próximo envío:</span>
+                                                <span class="rfid-countdown-time">--</span>
+                                            </div>
+                                        </div>
+                                        <progress class="rfid-progress-bar" value="100" max="100"></progress>
+                                    </div>
+
+
+                                    <div>
+                                        <div
+                                            class="uk-margin uk-form-horizontal uk-flex-between uk-flex-middle uk-flex">
+                                            <label class="uk-form-label" for="form-horizontal-text">Marcaciones
+                                                realizadas</label>
+                                            <div class="uk-form-controls ">
+                                                <div class="uk-width-1-1@s">
+                                                    <button type="button" class="uk-button uk-button-secondary"
+                                                        id="downloadAvance">Descargar
+                                                        avance <span uk-icon="download"></span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="uk-card uk-card-default uk-card-body uk-card-small uk-card-table">
+
+                                            <div class="uk-overflow-auto uk-overflow-table-print-result">
+                                                <table
+                                                    class="uk-table uk-table-small uk-table-divider uk-table-print-result"
+                                                    id="tabla-marcaciones">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Número de mesa</th>
+                                                            <th>Fecha RFID</th>
+                                                            <th>RFID</th>
+                                                            <th>Fecha BARCODE</th>
+                                                            <th>BARCODE</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td colspan="100%" class="text-muted uk-text-center">No se
+                                                                encontraron resultados</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div id="marcaciones-pagination" class="uk-margin-small-top"
+                                                style="display:none;"></div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="punto-control-rfid" style="display: none;">
+        <div class="uk-section uk-section-default uk-padding-remove fade-in">
+            <div class="uk-container uk-container-expand uk-flex uk-flex-middle">
+                <div class="uk-margin-small-top-uk-margin-small-bottom uk-width-1-1 spacing-responsive">
+
+                    <div class="uk-grid uk-grid-match uk-grid-small uk-flex-middle gap-responsive" uk-grid>
+                        <!-- <div class="uk-width-2-5@m">
+                            <article class="uk-article uk-article-info fade-in">
+
+                                <h2>
+                                    <img src="public/icons/icon-tag.svg" height="25px" alt="">
+                                    <span id="material-text"></span>
+                                </h2>
+
+                                <div class="uk-margin uk-text-cont">
+                                    <p class="uk-margin-remove">Número de caja de traslado:</p>
+                                    <p class="uk-text-lead uk-margin-remove" id="n_caja_traslado"></p>
+                                </div>
+
+                                <div class="uk-margin uk-text-cont">
+                                    <p class="uk-margin-remove">ODPE:</p>
+                                    <p class="uk-text-lead uk-margin-remove" id="odpe"></p>
+                                </div>
+
+                                <div class="uk-margin uk-text-cont">
+                                    <p class="uk-margin-remove">Local:</p>
+                                    <p class="uk-text-lead uk-margin-remove" id="local"></p>
+                                </div>
+
+                            </article>
+                        </div> -->
+                        <div class="uk-width-1-1@m">
+                            <div uk-height-viewport="offset-bottom: 45">
+                              <h2>
+                                  <img src="public/icons/icon-tag.svg" height="20px" alt="">
+                                  <span id="material-text"></span>
+                              </h2>
+
+                              <div class="uk-grid uk-grid-small uk-grid-match gap-responsive" uk-grid id="mesas-container">
+
+                              </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="uk-section uk-section-status uk-section-primary uk-light uk-padding-remove fade-in">
+            <div class="uk-container uk-container-expand uk-flex uk-flex-middle" uk-height-viewport="expand: true">
+                <div class="uk-margin-small-top-uk-margin-small-bottom uk-width-1-1 spacing-responsive">
+
+                    <div class="uk-grid-match uk-grid-small gap-responsive uk-grid-match" uk-grid>
+                        <div class="uk-width-2-5@m">
+                            <div class="uk-general-info uk-text-center">
+                                <img src="public/icons/onpe-white.svg" height="30px" alt=""> <br>
+                                <a href="#modal-change-ponit" class="uk-icon-button" uk-icon="pencil" uk-toggle></a>
+                                <h3 class="uk-margin-remove" id="proceso_electoral"></h3>
+
+                                <div id="proceso_electoral_descripcion"></div>
+                                <progress class="uk-progress uk-progress-onpe" value="0" max="100"
+                                    id="progress-bar"></progress>
+                            </div>
+
+                             <!-- <div class="uk- uk-text-center">
+                                  <button class="uk-button uk-button-primary uk-button-test">Datos de prueba</button>
+                              </div> -->
+
+                        </div>
+                        <div class="uk-width-3-5@m">
+                            <div class="uk-flex uk-flex-middle">
+                                <div class="uk-width-1-1">
+                                    <!-- Estado y Progressbar RFID fusionados -->
+                                    <div id="rfid-send-progress-container" class="rfid-status-compact"
+                                        style="display: none;">
+                                        <div class="rfid-status-header">
+                                            <div class="rfid-status-info">
+                                                <span class="rfid-status-icon" id="rfid-status-icon">⏸</span>
+                                                <span class="rfid-status-text" id="rfid-status-text">Sistema
+                                                    pausado</span>
+                                            </div>
+                                            <div class="rfid-countdown-info">
+                                                <span class="rfid-countdown-label">Próximo envío:</span>
+                                                <span class="rfid-countdown-time" id="rfid-countdown-text">--</span>
+                                            </div>
+                                        </div>
+                                        <progress id="rfid-send-progress" class="rfid-progress-bar" value="100"
+                                            max="100"></progress>
+                                    </div>
+
+                                    
+
+                                    <div
+                                        class="uk-card uk-card-message uk-card-default uk-card-small uk-card-body uk-height-lg hover-scale shadow-lg">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+    <div id="modal-config" class="uk-flex-top uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h3>Configuración de aplicación:</h3>
+
+            <ul class="uk-tab" uk-tab>
+                <li><a href="#">Configuración de antena</a></li>
+                <!-- <li><a href="#">Configuración de API</a></li> -->
+                <li><a href="#">General</a></li>
+                <li><a href="#">Ayuda</a></li>
+            </ul>
+
+            <div class="uk-switcher uk-margin-remove">
+                <!-- Tab 1: Configuración de Antena -->
+                <div>
+                    <fieldset class="uk-fieldset">
+                        <!-- Estado de conexión -->
+                        <div class="uk-alert antenna-connection-status uk-margin-small-bottom" id="antenna-connection-status" style="padding:8px 12px;">
+                            <div class="uk-flex uk-flex-middle uk-flex-between">
+                                <div class="uk-flex uk-flex-middle">
+                                    <span class="antenna-status-indicator" id="antenna-status-indicator"></span>
+                                    <div class="uk-margin-small-left">
+                                        <strong class="uk-text-small" id="antenna-status-title">Verificando conexión...</strong>
+                                        <p class="uk-text-small uk-margin-remove uk-text-muted" id="antenna-status-description">Comprobando estado del lector RFID</p>
+                                    </div>
+                                </div>
+                                <span uk-icon="icon: refresh; ratio: 1" class="antenna-status-icon" id="antenna-status-icon"></span>
+                            </div>
+                        </div>
+
+                        <!-- Tipo de conexión + TCP + USB en 3 columnas -->
+                        <div class="uk-grid-small uk-margin-small" uk-grid>
+                            <div class="uk-width-1-3@m">
+                                <label class="uk-form-label uk-text-bold">Tipo de conexión</label>
+                                <div class="uk-margin-small-top">
+                                    <label class="uk-display-block"><input class="uk-radio" type="radio" name="antenna-connection-type" value="tcp" checked> TCP/IP (Red)</label>
+                                    <label class="uk-display-block uk-margin-small-top"><input class="uk-radio" type="radio" name="antenna-connection-type" value="usb"> USB (Serial)</label>
+                                </div>
+                            </div>
+                            <!-- TCP/IP -->
+                            <div id="tcp-config" class="uk-width-2-3@m">
+                                <div class="uk-grid-small" uk-grid>
+                                    <div class="uk-width-1-2@s">
+                                        <label class="uk-form-label">IP de la antena</label>
+                                        <input class="uk-input uk-form-small" type="text" id="antenna-ip" placeholder="192.168.99.202" aria-label="IP">
+                                        <p class="uk-text-meta uk-margin-remove">Ej: 192.168.99.202</p>
+                                    </div>
+                                    <div class="uk-width-1-2@s">
+                                        <label class="uk-form-label">Puerto</label>
+                                        <input class="uk-input uk-form-small" type="number" id="antenna-port" placeholder="8889" aria-label="Puerto">
+                                        <p class="uk-text-meta uk-margin-remove">Default: 8889</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- USB -->
+                            <div id="usb-config" class="uk-width-2-3@m" style="display: none;">
+                                <div class="uk-grid-small" uk-grid>
+                                    <div class="uk-width-1-2@s">
+                                        <label class="uk-form-label">Puerto USB</label>
+                                        <input class="uk-input uk-form-small" type="text" id="antenna-usb-port" placeholder="/dev/ttyUSB0" aria-label="Puerto USB">
+                                        <p class="uk-text-meta uk-margin-remove">Win: COM3 · Linux: /dev/ttyUSB0</p>
+                                    </div>
+                                    <div class="uk-width-1-2@s">
+                                        <label class="uk-form-label">Baud Rate</label>
+                                        <select class="uk-select uk-form-small" id="antenna-baud-rate">
+                                            <option value="9600">9600</option>
+                                            <option value="19200">19200</option>
+                                            <option value="38400">38400</option>
+                                            <option value="57600">57600</option>
+                                            <option value="115200" selected>115200</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="uk-divider-small uk-margin-small">
+
+                        <!-- Lector + Tags: 3 cols + 1 col separado -->
+                        <div class="uk-grid-small" uk-grid>
+                            <div class="uk-width-1-3@m">
+                                <label class="uk-form-label">Distancia de lectura (m)</label>
+                                <input class="uk-input uk-form-small" type="number" id="antenna-distance" step="0.1" min="0.1" max="15" placeholder="1" aria-label="Distancia">
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Rango: 0.1 – 15 m. Recomendado: 1-2 m para uso electoral.</p>
+                            </div>
+                            <div class="uk-width-1-3@m">
+                                <label class="uk-form-label">Beeper (ms)</label>
+                                <input class="uk-input uk-form-small" type="number" id="antenna-beeper-duration" placeholder="100" aria-label="Duración">
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Duración del sonido de confirmación en milisegundos.</p>
+                            </div>
+                            <div class="uk-width-1-3@m">
+                                <label class="uk-form-label">Umbral duplicados (ms)</label>
+                                <input class="uk-input uk-form-small" type="number" id="antenna-duplicate-threshold" placeholder="200" aria-label="Umbral">
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Ignora relecturas del mismo tag dentro de este tiempo. Rec: 200 ms.</p>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <label class="uk-form-label">Puerto Socket.IO</label>
+                                <input class="uk-input uk-form-small" type="number" id="antenna-server-port" placeholder="3000" aria-label="Puerto servidor">
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Puerto del servidor WebSocket interno. Default: 3000.</p>
+                            </div>
+                        </div>
+
+                        <div class="uk-alert uk-alert-warning uk-margin-small" uk-alert style="padding:6px 12px;">
+                            <p class="uk-margin-remove uk-text-small"><span uk-icon="icon: warning; ratio: 0.8"></span> <strong>Reiniciar la aplicación</strong> para aplicar cambios de antena.</p>
+                        </div>
+
+                        <button class="uk-button uk-button-primary uk-button-small uk-width-1-1 uk-save-antenna-settings" type="button">Guardar configuración de antena</button>
+                    </fieldset>
+                </div>
+
+                <!-- Tab 2: Configuración de API -->
+                <!-- <div>
+                    <fieldset class="uk-fieldset">
+                        <div class="uk-margin">
+                          <label for="">URL de API: Ejemplo: http://192.168.0.101</label>
+                          <input class="uk-input" type="url" id="config-api-host" placeholder="Ingrese URL" aria-label="Input">
+                        </div>
+
+                        <div class="uk-margin">
+                          <label for="">Token de Acceso</label>
+                          <div class="uk-inline uk-width-1-1">
+                            <button class="uk-form-icon uk-form-icon-flip uk-toggle-password" href="#" uk-icon="icon: eye" type="button"></button>
+                            <input class="uk-input" type="password" id="config-api-key" placeholder="Ingrese token" aria-label="Clickable icon">
+                          </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <button class="uk-button uk-button-primary uk-width-1-1 uk-save-api-settings" type="button">Guardar cambios</button>
+                        </div>
+
+                    </fieldset>
+                </div> -->
+
+                <!-- Tab 3: Configuración General -->
+                <div>
+                    <fieldset class="uk-fieldset">
+                        <!-- Vista + Sonido en 2 columnas -->
+                        <div class="uk-grid-small uk-margin-small" uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <label class="uk-form-label" for="view-type-selector"><span uk-icon="icon: desktop; ratio: 0.8"></span> Tipo de vista</label>
+                                <select class="uk-select uk-form-small" id="view-type-selector">
+                                    <option value="punto-control-rfid">Punto de control RFID</option>
+                                    <option value="punto-control-impresora">Punto de control impresora</option>
+                                    <option value="punto-control-arco">Punto de control arco</option>
+                                </select>
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Selecciona el tipo de punto de control según el equipamiento disponible en el local.</p>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <label class="uk-form-label"><span uk-icon="icon: bell; ratio: 0.8"></span> Sonidos de notificación</label>
+                                <div class="uk-margin-small-top">
+                                    <label class="uk-switch">
+                                        <input type="checkbox" id="sound-enabled" checked>
+                                        <div class="uk-switch-slider uk-border-rounded"></div>
+                                    </label>
+                                    <span class="uk-text-small uk-text-muted uk-margin-small-left">Activar/desactivar</span>
+                                </div>
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Reproduce un sonido al detectar tags válidos (éxito) o con error de validación. Desactivar si hay muchas lecturas simultáneas.</p>
+                            </div>
+                        </div>
+
+                        <hr class="uk-divider-icon">
+
+                        <p class="uk-text-small uk-text-bold uk-margin-remove"><span uk-icon="icon: clock; ratio: 0.8"></span> Buffer RFID</p>
+                        <p class="uk-text-small uk-text-muted uk-margin-small-bottom">El buffer acumula lecturas RFID y las envía en lote al servidor, reduciendo el tráfico de red y agrupando lecturas relacionadas.</p>
+
+                        <!-- Buffer en 3 columnas -->
+                        <div class="uk-grid-small uk-margin-small" uk-grid>
+                            <div class="uk-width-1-3@m">
+                                <label class="uk-form-label" for="buffer-interval">Intervalo de envío (seg)</label>
+                                <input class="uk-input uk-form-small" type="number" id="buffer-interval" min="1" max="300" value="4" placeholder="4">
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Tiempo de espera antes de enviar el lote de lecturas al servidor. Rango: 1 – 300 seg. Recomendado: 10 seg.</p>
+                            </div>
+                            <div class="uk-width-1-3@m">
+                                <label class="uk-form-label" for="buffer-max-tags">Máx. tags por envío</label>
+                                <input class="uk-input uk-form-small" type="number" id="buffer-max-tags" min="1" max="1000" value="50" placeholder="50">
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Fuerza el envío al acumular este número de tags. Rango: 1 – 1000. Recomendado: 50 tags.</p>
+                            </div>
+                            <div class="uk-width-1-3@m">
+                                <label class="uk-form-label" for="buffer-max-readings">Máx. historial</label>
+                                <input class="uk-input uk-form-small" type="number" id="buffer-max-readings" min="10" max="1000" value="100" placeholder="100">
+                                <p class="uk-text-small uk-text-muted uk-margin-small-top">Número máximo de lecturas almacenadas en el historial local. Rango: 10 – 1000. Recomendado: 100.</p>
+                            </div>
+                        </div>
+
+                        <button class="uk-button uk-button-primary uk-button-small uk-width-1-1 uk-save-general-settings" type="button">Guardar cambios</button>
+                    </fieldset>
+                </div>
+
+                <!-- Tab 4: Ayuda -->
+                <div>
+                    <div class="help-section">
+                        <h2 class="uk-heading-line uk-text-center"><span><span
+                                    uk-icon="icon: question; ratio: 1.5"></span> Guía de
+                                Usuario</span></h2>
+
+                        <!-- Configuraciones Recomendadas -->
+                        <div class="uk-card uk-card-default uk-card-body uk-margin">
+                            <h3 class="uk-card-title"><span uk-icon="star"></span> Configuraciones Recomendadas</h3>
+
+                            <div class="uk-alert uk-alert-primary">
+                                <h4>⚙️ Configuración del Buffer RFID</h4>
+                                <ul class="uk-list uk-list-bullet">
+                                    <li><strong>Intervalo de envío:</strong> 10 segundos (ajustar según volumen de
+                                        lecturas)</li>
+                                    <li><strong>Máximo de tags por envío:</strong> 50 tags (incrementar si hay alta
+                                        densidad)</li>
+                                    <li><strong>Historial de lecturas:</strong> 100 registros (suficiente para
+                                        auditoría)</li>
+                                </ul>
+                            </div>
+
+                            <div class="uk-alert uk-alert-success">
+                                <h4>📡 Distancias de Lectura Recomendadas</h4>
+                                <table class="uk-table uk-table-small uk-table-divider">
+                                    <thead>
+                                        <tr>
+                                            <th>Distancia</th>
+                                            <th>Potencia</th>
+                                            <th>Uso Recomendado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>10-49 cm</td>
+                                            <td>5 dBm</td>
+                                            <td>Control individual, escritorio</td>
+                                        </tr>
+                                        <tr>
+                                            <td>50-99 cm</td>
+                                            <td>5-7 dBm</td>
+                                            <td>Lectura de documentos cercanos</td>
+                                        </tr>
+                                        <tr>
+                                            <td>1-2 metros</td>
+                                            <td>15-18 dBm</td>
+                                            <td><strong>RECOMENDADO</strong> - Lectura rápida y precisa</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3-4 metros</td>
+                                            <td>18-22 dBm</td>
+                                            <td>Alcance medio-corto</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5-6 metros</td>
+                                            <td>22-25 dBm</td>
+                                            <td>Alcance medio (puede haber interferencias)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>7-10 metros</td>
+                                            <td>25-30 dBm</td>
+                                            <td>Largo alcance (más lecturas duplicadas)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="uk-text-small uk-text-muted">💡 Para uso electoral ONPE, se recomienda
+                                    <strong>1-2
+                                        metros</strong> para balance entre velocidad y precisión.</p>
+                            </div>
+                        </div>
+
+                        <!-- Configuración por TCP/IP -->
+                        <div class="uk-card uk-card-default uk-card-body uk-margin">
+                            <h3 class="uk-card-title"><span uk-icon="world"></span> Configuración por TCP/IP (Red)</h3>
+
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2@m">
+                                    <div class="uk-alert uk-alert-warning">
+                                        <h4>🔌 Requisitos de Red</h4>
+                                        <ol class="uk-list uk-list-decimal">
+                                            <li>Conectar la antena RFID a la red local via cable Ethernet</li>
+                                            <li>Configurar la PC en la misma red: <code>192.168.99.x</code></li>
+                                            <li>IP de la antena (default): <code>192.168.99.202</code></li>
+                                            <li>Puerto (default): <code>8889</code></li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="uk-width-1-2@m">
+                                    <div class="uk-alert">
+                                        <h4>✅ Verificación de Conexión</h4>
+                                        <ol class="uk-list uk-list-decimal">
+                                            <li>Abrir terminal/CMD</li>
+                                            <li>Ejecutar: <code>ping 192.168.99.202</code></li>
+                                            <li>Debe responder con tiempos < 10ms</li>
+                                            <li>Si no responde, revisar:
+                                                <ul class="uk-list uk-list-bullet uk-margin-small-top">
+                                                    <li>Cable Ethernet conectado</li>
+                                                    <li>Antena encendida</li>
+                                                    <li>IP de la PC configurada correctamente</li>
+                                                </ul>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="uk-alert uk-alert-primary">
+                                <p><strong>💡 Consejo:</strong> La conexión TCP/IP es más estable y rápida que USB. Se
+                                    recomienda para
+                                    uso en producción.</p>
+                            </div>
+                        </div>
+
+                        <!-- Configuración por USB -->
+                        <div class="uk-card uk-card-default uk-card-body uk-margin">
+                            <h3 class="uk-card-title"><span uk-icon="link"></span> Configuración por USB (Serial)</h3>
+
+                            <div class="uk-alert uk-alert-danger">
+                                <h4>⚠️ Estado Actual</h4>
+                                <p>La conexión USB aún no está completamente implementada. Se recomienda usar TCP/IP.
+                                </p>
+                            </div>
+
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2@m">
+                                    <h4>🔧 Configuración Básica</h4>
+                                    <ul class="uk-list uk-list-bullet">
+                                        <li><strong>Puerto USB:</strong>
+                                            <ul>
+                                                <li>Windows: <code>COM3</code>, <code>COM4</code>, etc.</li>
+                                                <li>Linux/Mac: <code>/dev/ttyUSB0</code>, <code>/dev/ttyUSB1</code></li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>Baud Rate:</strong> 115200 (default)</li>
+                                        <li><strong>Data bits:</strong> 8</li>
+                                        <li><strong>Stop bits:</strong> 1</li>
+                                        <li><strong>Parity:</strong> None</li>
+                                    </ul>
+                                </div>
+
+                                <div class="uk-width-1-2@m">
+                                    <h4>🔍 Identificar Puerto</h4>
+                                    <p class="uk-text-bold">Windows:</p>
+                                    <ol class="uk-list uk-list-decimal">
+                                        <li>Abrir "Administrador de dispositivos"</li>
+                                        <li>Buscar "Puertos (COM y LPT)"</li>
+                                        <li>Identificar el puerto de la antena</li>
+                                    </ol>
+
+                                    <p class="uk-text-bold uk-margin-small-top">Linux/Mac:</p>
+                                    <pre class="uk-margin-small-top"><code>ls /dev/tty*</code></pre>
+                                    <p class="uk-text-small uk-text-muted">Buscar /dev/ttyUSB0 o similar</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Configuración de la Aplicación -->
+                        <div class="uk-card uk-card-default uk-card-body uk-margin">
+                            <h3 class="uk-card-title"><span uk-icon="cog"></span> Configuración de la Aplicación</h3>
+
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2@m">
+                                    <h4>🔔 Sonidos de Notificación</h4>
+                                    <p>Los sonidos se reproducen al escanear tags:</p>
+                                    <ul class="uk-list uk-list-bullet">
+                                        <li><strong>Sonido de éxito:</strong> Tags válidos y enviados correctamente</li>
+                                        <li><strong>Sonido de error:</strong> Tags no identificados o errores de envío
+                                        </li>
+                                        <li>Desactivar si hay muchas lecturas simultáneas</li>
+                                    </ul>
+                                </div>
+
+                                <div class="uk-width-1-2@m">
+                                    <h4>⏯️ Control Play/Pause</h4>
+                                    <p>El botón en la esquina superior derecha controla el sistema:</p>
+                                    <ul class="uk-list uk-list-bullet">
+                                        <li><strong>▶ Play:</strong> Sistema activo, acumula lecturas</li>
+                                        <li><strong>⏸ Pause:</strong> Ignora lecturas RFID</li>
+                                        <li>El sistema inicia en pausa por seguridad</li>
+                                        <li>Las lecturas pausadas se marcan en el historial</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="uk-divider-icon">
+
+                            <h4>📊 Sistema de Acumulación</h4>
+                            <div class="uk-alert uk-alert-primary">
+                                <p><strong>¿Cómo funciona?</strong></p>
+                                <ol class="uk-list uk-list-decimal">
+                                    <li>Al escanear el <strong>primer tag</strong>, inicia el contador</li>
+                                    <li>Durante el intervalo configurado, acumula todos los tags detectados</li>
+                                    <li>Al cumplirse el tiempo, envía el lote completo al servidor</li>
+                                    <li>Se reinicia y espera la siguiente primera lectura</li>
+                                </ol>
+                                <p class="uk-margin-small-top"><strong>💡 Ventaja:</strong> Reduce tráfico de red y
+                                    agrupa lecturas
+                                    relacionadas.</p>
+                            </div>
+
+                            <h4 class="uk-margin-top">🗑️ Envío Forzado</h4>
+                            <p>El sistema enviará inmediatamente si:</p>
+                            <ul class="uk-list uk-list-bullet">
+                                <li>Se alcanza el máximo de tags configurado (default: 50)</li>
+                                <li>Se presiona el botón "Datos de prueba"</li>
+                            </ul>
+                        </div>
+
+                        <!-- Solución de Problemas -->
+                        <div class="uk-card uk-card-default uk-card-body uk-margin">
+                            <h3 class="uk-card-title"><span uk-icon="warning"></span> Solución de Problemas</h3>
+
+                            <ul class="uk-accordion" uk-accordion>
+                                <li>
+                                    <a class="uk-accordion-title" href="#">🔴 La antena aparece desconectada</a>
+                                    <div class="uk-accordion-content">
+                                        <ul class="uk-list uk-list-bullet">
+                                            <li>Verificar que la antena esté encendida</li>
+                                            <li>Comprobar cable Ethernet conectado</li>
+                                            <li>Verificar IP: <code>ping 192.168.99.202</code></li>
+                                            <li>Revisar que la PC esté en red 192.168.99.x</li>
+                                            <li>Reiniciar la aplicación después de conectar</li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <a class="uk-accordion-title" href="#">📡 No detecta tags RFID</a>
+                                    <div class="uk-accordion-content">
+                                        <ul class="uk-list uk-list-bullet">
+                                            <li>Verificar que el sistema esté en modo <strong>▶ Play</strong> (no
+                                                pausado)</li>
+                                            <li>Acercar el tag a la antena (distancia recomendada: 1-2 metros)</li>
+                                            <li>Reducir la distancia de lectura en configuración</li>
+                                            <li>Verificar que los tags sean UHF (no HF/NFC)</li>
+                                            <li>Revisar que el beeper esté activado para confirmar lecturas</li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <a class="uk-accordion-title" href="#">⚠️ Lecturas duplicadas excesivas</a>
+                                    <div class="uk-accordion-content">
+                                        <ul class="uk-list uk-list-bullet">
+                                            <li>Reducir distancia de lectura (menor potencia)</li>
+                                            <li>Aumentar el umbral de duplicados (>200ms)</li>
+                                            <li>Configurar distancia a 1-2 metros</li>
+                                            <li>Alejar tags después de escanear</li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <a class="uk-accordion-title" href="#">🚫 Error al enviar al servidor</a>
+                                    <div class="uk-accordion-content">
+                                        <ul class="uk-list uk-list-bullet">
+                                            <li>Verificar configuración de API en la pestaña correspondiente</li>
+                                            <li>Comprobar que la URL del servidor sea correcta</li>
+                                            <li>Verificar que el token de acceso sea válido</li>
+                                            <li>Revisar conexión a Internet</li>
+                                            <li>Consultar con el administrador del sistema</li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Información Técnica -->
+                        <div class="uk-card uk-card-default uk-card-body uk-margin">
+                            <h3 class="uk-card-title"><span uk-icon="info"></span> Información Técnica</h3>
+
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2@m">
+                                    <h4>🔧 Especificaciones del Lector</h4>
+                                    <ul class="uk-list uk-list-bullet">
+                                        <li><strong>Modelo:</strong> UHF UR4 Fixed Reader</li>
+                                        <li><strong>Frecuencia:</strong> UHF RFID (860-960 MHz)</li>
+                                        <li><strong>Protocolo:</strong> EPC Class 1 Gen 2 / ISO 18000-6C</li>
+                                        <li><strong>Potencia:</strong> 5-30 dBm (ajustable)</li>
+                                        <li><strong>Rango:</strong> 0.1-15+ metros</li>
+                                        <li><strong>Conexiones:</strong> TCP/IP (Ethernet), USB (Serial)</li>
+                                    </ul>
+                                </div>
+
+                                <div class="uk-width-1-2@m">
+                                    <h4>💻 Requisitos del Sistema</h4>
+                                    <ul class="uk-list uk-list-bullet">
+                                        <li><strong>SO:</strong> Windows 10/11, Linux, macOS</li>
+                                        <li><strong>Node.js:</strong> v14 o superior</li>
+                                        <li><strong>RAM:</strong> 2GB mínimo</li>
+                                        <li><strong>Red:</strong> Ethernet (para TCP/IP)</li>
+                                        <li><strong>Puerto USB:</strong> Disponible (para modo USB)</li>
+                                    </ul>
+
+                                    <h4 class="uk-margin-top">📞 Soporte</h4>
+                                    <p class="uk-text-small">Para asistencia técnica, contactar al equipo de TI de ONPE.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <div id="modal-change-ponit-print" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h3>Configuración de punto (Impresiones):</h3>
+
+            <div class="uk-form-horizontal uk-margin-small">
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-select-print">Selecciona proceso electoral</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="selectProcesoPrint">
+                            <option value="">-- Seleccione proceso --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <button class="uk-button uk-button-primary uk-modal-close uk-width-1-1 uk-save-point-print">Guardar
+                        cambios</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modal-change-ponit" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h3>Configuración de punto (Rfid):</h3>
+
+            <div class="uk-form-horizontal uk-margin-small">
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-select">Selecciona proceso electoral</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="selectProceso">
+                            <option value="">-- Seleccione proceso --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-select">Selecciona punto de control</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="selectMaterial">
+                            <option value="">-- Seleccione material --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <button class="uk-button uk-button-primary uk-modal-close uk-width-1-1 uk-save-point">Guardar
+                        cambios</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modal-change-point-arco" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h3>Configuración de punto (Arcos):</h3>
+
+            <div class="uk-form-horizontal uk-margin-small">
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-select">Selecciona proceso electoral</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="selectProcesoArco">
+                            <option value="">-- Seleccione proceso --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-select">Selecciona una variable</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="selectVariableArco">
+                            <option value="">-- Seleccione variable --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <button class="uk-button uk-button-primary uk-modal-close uk-width-1-1 uk-save-point-arco">Guardar
+                        cambios</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Historial de Lecturas -->
+    <div id="modal-readings" class="uk-flex-top uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical" style="width: 90%; max-width: 1200px;">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h3 class="uk-margin-small-bottom">Historial de Lecturas RFID</h3>
+            <p class="uk-text-meta uk-margin-small-bottom">Últimas lecturas detectadas</p>
+
+            <div class="uk-overflow-auto" style="max-height: 500px;">
+                <table
+                    class="uk-table uk-table-small uk-table-divider uk-table-striped uk-table-hover readings-table-compact">
+                    <thead>
+                        <tr>
+                            <th class="uk-table-shrink">#</th>
+                            <th>EPC</th>
+                            <th class="uk-text-center">PC</th>
+                            <th class="uk-text-center">RSSI</th>
+                            <th class="uk-text-center">Ant</th>
+                            <th class="uk-text-center">Cant</th>
+                            <th class="uk-text-center">Estado</th>
+                            <th class="uk-text-nowrap">Fecha/Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="readings-table-body">
+                        <tr>
+                            <td colspan="8" class="uk-text-center uk-text-muted">
+                                <span uk-icon="icon: info; ratio: 1.2"></span>
+                                <p class="uk-text-small">No hay lecturas disponibles</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="uk-margin-small-top uk-flex uk-flex-between uk-flex-middle">
+                <div class="uk-text-small">
+                    <span class="uk-badge uk-badge-success" id="readings-count">0</span> lecturas
+                </div>
+                <button class="uk-button uk-button-danger uk-button-small" id="clear-readings-btn"
+                    style="padding: 0 12px; height: 30px; line-height: 28px;">
+                    <span uk-icon="icon: trash; ratio: 0.8"></span> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-success" src="public/sounds/success.mp3" preload="auto"></audio>
+    <audio id="audio-error" src="public/sounds/error.mp3" preload="auto"></audio>
+
+    <style>
+        /* Estilos para badges de ARCO: más padding y bordes redondeados */
+        #arcos-indicators-container .uk-label {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        #arco-correctos {
+            background: #2ecc71 !important;
+            color: #fff !important;
+        }
+
+        #arco-incorrectos {
+            background: #e74c3c !important;
+            color: #fff !important;
+        }
+
+        #arco-tags {
+            background: #18a0d8 !important;
+            color: #fff !important;
+        }
+    </style>
+
+
+    <script src="public/vendor/uikit/js/uikit.min.js"></script>
+    <script src="public/vendor/uikit/js/uikit-icons.min.js"></script>
+    <script src="public/vendor/jquery/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        (function(){
+            function initSelectSearch(){
+                try{
+                    if(!window.jQuery) return;
+                    window.jQuery(document).ready(function($){
+                        $('select.uk-select').each(function(){
+                            var $s = $(this);
+                            if($s.data('select2')) return;
+                            var $modal = $s.closest('.uk-modal-container, .uk-modal');
+                            var $dropdownParent = $(document.body);
+                            if($modal.length){
+                                var $dialog = $modal.find('.uk-modal-dialog').first();
+                                if($dialog.length) $dropdownParent = $dialog;
+                            }
+                            $s.select2({
+                                width: '100%',
+                                dropdownParent: $dropdownParent
+                            });
+                        });
+                    });
+                }catch(e){
+                    console.warn('Select2 init error', e);
+                }
+            }
+            // Inicializar al cargar
+            initSelectSearch();
+            // Re-inicializar si se agregan selects dinámicamente (simple observer)
+            if(window.MutationObserver){
+                var mo = new MutationObserver(function(){ initSelectSearch(); });
+                mo.observe(document.body, { childList: true, subtree: true });
+            }
+        })();
+    </script>
+    <script src="public/js/user-bar.js"></script>
+    <script src="public/js/notify.js"></script>
+    <script src="public/vendor/canva/html2canvas.min.js"></script>
+    <script src="public/js/main.js?v=1.10"></script>
+    <script src="public/vendor/onscanjs/onscan.min.js"></script>
+</body>
+
+</html>

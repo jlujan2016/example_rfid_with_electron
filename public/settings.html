@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Configuración de red - ONPE</title>
+  <link rel="stylesheet" href="styles/login.css">
+</head>
+<body>
+  <div class="mobile-login">
+    <div class="mobile-card">
+      <img class="logo" src="img/logo-onpe.svg" alt="ONPE" />
+      <h2 class="title">Configuración de red</h2>
+
+      <form id="settings-form" class="login-form">
+        <div class="input-group">
+          <input id="server-host" name="server-host" type="url" placeholder="URL de servidor, Ej: http://192.168.0.100:8000" required>
+        </div>
+
+        <button id="validate-btn" class="btn-primary" type="button">Validar configuración</button>
+        <button id="back-btn" class="btn-primary" type="button" style="background:#0b4f7a;color:#fff;margin-top:8px;">Regresar a inicio de sesión</button>
+
+        <div id="settings-msg" style="display:none;margin-top:10px;padding:8px;border-radius:8px;color:#fff"></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/login-fallback.js"></script>
+  <script src="js/app-config.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

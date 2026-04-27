@@ -1,0 +1,880 @@
+/* Mejoras Visuales y Responsive Adicionales */
+
+/* Tipografía adaptativa para el card de mensajes
+   - Tamaño máximo solicitado: 4rem / 700 / 5.6rem / center
+   - El JS alterna clases msg-size-* según el contenido.
+*/
+.uk-card-message {
+  text-align: left;
+  font-weight: 700;
+  color: #000;
+}
+
+/* Asegurar que el contenido del mensaje herede el tamaño (evita que main.css
+   fuerce tamaños en <p> dentro del card). */
+.uk-card-message p,
+.uk-card-message ul,
+.uk-card-message ol,
+.uk-card-message li {
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+.uk-card-message li {
+  text-align: left;
+}
+
+.uk-card-message.msg-size-xl {
+  font-size: 3rem;
+  line-height: 3.7rem;
+}
+
+.uk-card-message.msg-size-lg {
+  font-size: 2.5rem;
+  line-height: 3rem;
+}
+
+.uk-card-message.msg-size-md {
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+
+.uk-card-message.msg-size-sm {
+  font-size: 1.5rem;
+  line-height:1.8rem;
+}
+
+.uk-card-message.msg-size-xs {
+  font-size: 1.2rem;
+  line-height: 1.7rem;
+}
+
+/* Optimización de scroll suave */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Mejoras de rendimiento con will-change */
+.uk-card-tag-container,
+.uk-card-message,
+.uk-button {
+  will-change: transform, box-shadow;
+}
+
+/* Mejoras de accesibilidad - Focus visible */
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #189ECE;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Mejoras de texto más legible */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Mejoras para monitores de alta resolución */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    font-weight: 400;
+  }
+}
+
+/* Grid mejorado para diferentes breakpoints */
+@media (min-width: 1366px) {
+  .uk-container-expand {
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 1600px) {
+  .uk-container-expand {
+    max-width: 1540px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .uk-container-expand {
+    max-width: 1800px;
+  }
+}
+
+/* Mejora del spacing en secciones */
+@media (min-width: 1366px) {
+  .uk-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .uk-section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+
+/* Mejoras de iconos y logos */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Optimización de animaciones para rendimiento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mejoras de tarjetas para pantallas grandes */
+@media (min-width: 1920px) {
+  .uk-card-tag-container {
+    min-height: 120px;
+  }
+
+  .uk-card-message {
+    min-height: 200px;
+  }
+}
+
+/* Optimización de progreso bar */
+.uk-progress {
+  overflow: hidden;
+  position: relative;
+}
+
+@media (min-width: 1366px) {
+  .uk-progress {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Mejoras de contraste y legibilidad */
+.uk-text-lead {
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+@media (min-width: 1920px) {
+  .uk-text-lead {
+    line-height: 1.8;
+  }
+}
+
+/* Optimización de las tarjetas NFC */
+.uk-card-tag {
+  background-color: #fff;
+  backdrop-filter: blur(10px);
+}
+
+@media (min-width: 1366px) {
+  .uk-card-tag {
+    min-height: 60px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .uk-card-tag {
+    min-height: 70px;
+  }
+}
+
+/* Mejora del hover en dispositivos con puntero */
+@media (hover: hover) and (pointer: fine) {
+  .uk-button:hover {
+    cursor: pointer;
+  }
+
+  .uk-card-tag-container:hover {
+    cursor: pointer;
+  }
+}
+
+/* Styles for top user bar */
+.user-bar{
+  position: relative; /* part of the document flow */
+  width: 100%;
+  left: 0;
+  transform: none;
+  z-index: 9999;
+  background: #00356B; /* blue background */
+  border-radius: 0;
+  box-shadow: none;
+  padding: 10px 16px;
+  color: #ffffff;
+}
+.user-bar-inner{ display:flex; align-items:center; gap:12px; justify-content:space-between; }
+.user-details{ display:flex; flex-direction:row; gap:12px; align-items:center; font-size:14px; color:inherit; }
+.user-details .user-name{ font-weight:600; color: #ffffff; }
+.user-details .user-email{ color: rgba(255,255,255,0.85); font-size:13px; }
+.user-details .user-role{ color: rgba(255,255,255,0.9); font-size:13px; }
+.user-actions{ margin-left:8px; }
+
+/* Prevent horizontal overflow caused by long user names/emails or buttons */
+.user-bar, .user-bar * { box-sizing: border-box; }
+.user-bar-inner { flex-wrap: nowrap; }
+.user-details { min-width: 0; flex: 1 1 auto; overflow: hidden; }
+.user-details .user-name,
+.user-details .user-email { max-width: 40vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
+.top-controls { flex: 0 0 auto; }
+
+/* As a safety-net, avoid body horizontal scrolling */
+html, body { overflow-x: hidden; }
+
+/* Ensure logout button text is visible on blue background */
+#logout-btn { color: #ffffff !important; }
+
+/* Custom notifications container (bottom-center) */
+.custom-notify-container{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 16px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:center;
+  pointer-events: none; /* let children enable pointer */
+  z-index: 200000;
+}
+.custom-notify{
+  pointer-events: auto;
+  min-width: 320px;
+  max-width: 92vw;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.custom-notify.hide{ opacity:0; transform: translateY(8px); }
+.custom-notify .notify-text{ flex:1; font-weight:600; font-size:14px; }
+.custom-notify .notify-badge{ background: #c0392b; color:#fff; min-width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-weight:700; margin-left:12px; font-size:13px; padding:0 8px; }
+.custom-notify .notify-icon{ margin-right:8px; display:flex; align-items:center; justify-content:center; }
+.custom-notify .notify-icon svg{ width:18px; height:18px; display:block; color: currentColor; stroke: currentColor; }
+/* Default icon color (override conflicting styles) */
+.custom-notify .notify-icon{ color: #ffffff !important; }
+.custom-notify.notify-danger .notify-icon{ color: #ffffff !important; }
+.custom-notify.notify-success .notify-icon{ color: #ffffff !important; }
+.custom-notify.notify-warning .notify-icon{ color: #ffffff !important; }
+.custom-notify.notify-primary .notify-icon{ color: #ffffff !important; }
+.custom-notify.pulse{ animation: pulse-scale 320ms ease; }
+@keyframes pulse-scale{ 0%{ transform:scale(1); } 50%{ transform:scale(1.03); } 100%{ transform:scale(1); } }
+
+/* Solid tones for different types */
+.custom-notify.notify-primary{ background: #00356B; }
+.custom-notify.notify-success{ background: #198754; }
+.custom-notify.notify-warning{ background: linear-gradient(90deg,#f6a623,#f39c12); color: #fff; }
+.custom-notify.notify-warning .notify-badge{ background: #ffffff; color: #f39c12; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03); }
+.custom-notify.notify-danger{ background: #c0392b; }
+
+/* Danger variant: make badge contrast (white bg with red text) */
+.custom-notify.notify-danger .notify-badge{
+  background: #ffffff;
+  color: #c0392b;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+}
+
+/* Success variant: badge should be white with green text for contrast */
+.custom-notify.notify-success .notify-badge{
+  background: #ffffff;
+  color: #198754;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+}
+
+
+/* Optimización para tablets y dispositivos intermedios */
+@media (min-width: 768px) and (max-width: 1365px) {
+  html {
+    font-size: 15px;
+  }
+
+  .uk-container-expand {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* UIkit modal default behavior restored (no vertical-centering override) */
+
+/* Mejoras de spacing vertical para contenido */
+@media (min-width: 1366px) {
+  .uk-margin-small-top {
+    margin-top: 1.5rem !important;
+  }
+
+  .uk-margin-small-bottom {
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .uk-margin-small-top {
+    margin-top: 2rem !important;
+  }
+
+  .uk-margin-small-bottom {
+    margin-bottom: 2rem !important;
+  }
+}
+
+/* Mejoras de z-index y capas */
+.uk-card-tag-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Optimización de bordes redondeados */
+@media (min-width: 1920px) {
+  .uk-section-status {
+    border-radius: 70px 70px 0 0;
+  }
+}
+
+/* Mejoras de sombras para profundidad */
+.uk-card-primary {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+@media (min-width: 1366px) {
+  .uk-card-primary {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (min-width: 1920px) {
+  .uk-card-primary {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* Optimización de texto para diferentes tamaños */
+@media (min-width: 1366px) {
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+  }
+}
+
+@media (min-width: 1920px) {
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.4;
+  }
+}
+
+/* Switch personalizado */
+.uk-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.uk-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.uk-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 26px;
+}
+
+.uk-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+.uk-switch input:checked + .uk-switch-slider {
+  background-color: #189ECE;
+}
+
+.uk-switch input:focus + .uk-switch-slider {
+  box-shadow: 0 0 1px #189ECE;
+}
+
+.uk-switch input:checked + .uk-switch-slider:before {
+  transform: translateX(24px);
+}
+
+.uk-switch input:disabled + .uk-switch-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#rfid-toggle-btn {
+  transition: all 0.3s ease;
+}
+
+#rfid-toggle-btn.active {
+  background: #32d296 !important;
+  border-color: #32d296 !important;
+}
+
+#rfid-toggle-btn.paused {
+  background: #8d0801 !important;
+  border-color: #8d0801 !important;
+}
+
+/* Estado y Progressbar RFID fusionados - Diseño minimalista profesional */
+.rfid-status-compact {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.95) 100%);
+  border: 1px solid rgba(0, 53, 107, 0.1);
+  border-radius: 10px;
+  padding: 5px 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  margin-bottom: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.rfid-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
+.rfid-status-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rfid-status-icon {
+  font-size: 14px;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.rfid-status-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rfid-countdown-info {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.rfid-countdown-label {
+  font-size: 10px;
+  color: #666;
+  font-weight: 500;
+}
+
+.rfid-countdown-time {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00356B;
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+  text-align: right;
+}
+
+.rfid-progress-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.rfid-progress-bar::-webkit-progress-bar {
+  background-color: rgba(0, 53, 107, 0.1);
+  border-radius: 3px;
+}
+
+.rfid-progress-bar::-webkit-progress-value {
+  background: linear-gradient(90deg, #00356B 0%, #189ECE 100%);
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+.rfid-progress-bar::-moz-progress-bar {
+  background: linear-gradient(90deg, #00356B 0%, #189ECE 100%);
+  border-radius: 3px;
+}
+
+/* Estados */
+.rfid-status-compact.active .rfid-status-icon {
+  color: #32d296;
+  animation: pulse-icon 2s ease-in-out infinite;
+}
+
+.rfid-status-compact.paused .rfid-status-icon {
+  color: #999;
+}
+
+.rfid-status-compact.active .rfid-progress-bar::-webkit-progress-value {
+  background: linear-gradient(90deg, #32d296 0%, #28a745 100%);
+}
+
+.rfid-status-compact.warning .rfid-progress-bar::-webkit-progress-value {
+  background: linear-gradient(90deg, #faa05a 0%, #8d0801 100%);
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Estado de lectura ignorada */
+.rfid-status-compact.ignored-reading {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.15) 100%);
+  border-color: rgba(255, 152, 0, 0.3);
+  animation: shake-horizontal 0.5s ease-in-out;
+}
+
+.rfid-status-compact.ignored-reading .rfid-status-icon {
+  color: #ff9800;
+  animation: pulse-warning 0.5s ease-in-out 3;
+}
+
+.rfid-status-compact.ignored-reading .rfid-status-text {
+  color: #f57c00;
+  font-weight: 600;
+}
+
+@keyframes pulse-warning {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes shake-horizontal {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Estado de conexión de antena */
+.antenna-connection-status {
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}
+
+.antenna-connection-status.antenna-connected {
+  background: linear-gradient(135deg, rgba(50, 210, 150, 0.1) 0%, rgba(40, 180, 130, 0.1) 100%);
+  border-color: #32d296;
+}
+
+.antenna-connection-status.antenna-disconnected {
+  background: linear-gradient(135deg, rgba(240, 80, 110, 0.1) 0%, rgba(220, 60, 90, 0.1) 100%);
+  border-color: #f0506e;
+}
+
+.antenna-connection-status.antenna-connecting {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
+  border-color: #ffc107;
+}
+
+.antenna-status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.antenna-connected .antenna-status-indicator {
+  background: #32d296;
+  box-shadow: 0 0 0 0 rgba(50, 210, 150, 0.7);
+  animation: pulse-connection 2s infinite;
+}
+
+.antenna-disconnected .antenna-status-indicator {
+  background: #f0506e;
+}
+
+.antenna-connecting .antenna-status-indicator {
+  background: #ffc107;
+  animation: blink-connection 1s infinite;
+}
+
+.antenna-connection-status .antenna-status-icon {
+  color: inherit;
+}
+
+.antenna-connected .antenna-status-icon {
+  color: #32d296;
+}
+
+.antenna-disconnected .antenna-status-icon {
+  color: #f0506e;
+}
+
+.antenna-connecting .antenna-status-icon {
+  color: #ffc107;
+}
+
+@keyframes pulse-connection {
+  0% {
+    box-shadow: 0 0 0 0 rgba(50, 210, 150, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(50, 210, 150, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(50, 210, 150, 0);
+  }
+}
+
+@keyframes blink-connection {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Tabla de lecturas compactas */
+.readings-table-compact {
+  font-size: 12px;
+}
+
+/* Sección de Ayuda */
+.help-section {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.help-section h2 {
+  color: #00356B;
+  margin-bottom: 30px;
+}
+
+.help-section h3.uk-card-title {
+  color: #00356B;
+  font-size: 18px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.help-section h4 {
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.help-section .uk-alert h4 {
+  margin-top: 0;
+  font-size: 15px;
+}
+
+.help-section .uk-table {
+  font-size: 13px;
+}
+
+.help-section .uk-table th {
+  background: #f8f8f8;
+  font-weight: 600;
+  color: #00356B;
+}
+
+.help-section code {
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #c7254e;
+  border: 1px solid #e1e1e1;
+}
+
+.help-section pre {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+  overflow-x: auto;
+}
+
+.help-section pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  color: #333;
+}
+
+.help-section .uk-list-bullet,
+.help-section .uk-list-decimal {
+  margin-left: 20px;
+}
+
+.help-section .uk-accordion-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  display: block;
+  padding: 10px 15px;
+  background: #f8f8f8;
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
+  transition: all 0.3s ease;
+}
+
+.help-section .uk-accordion-title:hover {
+  color: #00356B;
+  background: #e6f2ff;
+  border-color: #00356B;
+}
+
+.help-section .uk-accordion > li {
+  margin-bottom: 10px;
+}
+
+.help-section .uk-accordion-content {
+  padding: 15px 15px 5px 15px;
+  margin-top: 5px;
+}
+
+.help-section .uk-card-default {
+  border: 1px solid #e5e5e5;
+}
+
+.help-section .uk-alert-primary {
+  background: #e6f2ff;
+  border-color: #00356B;
+}
+
+.help-section .uk-alert-success {
+  background: #f0f9ff;
+  border-color: #32d296;
+}
+
+.help-section .uk-alert-warning {
+  background: #fff9e6;
+  border-color: #ffc107;
+}
+
+.help-section .uk-alert-danger {
+  background: #ffe6e6;
+  border-color: #f0506e;
+}
+
+/* Scrollbar personalizado para la sección de ayuda */
+.help-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.help-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.help-section::-webkit-scrollbar-thumb {
+  background: #00356B;
+  border-radius: 4px;
+}
+
+.help-section::-webkit-scrollbar-thumb:hover {
+  background: #002347;
+}
+
+/* Tabla de lecturas compacta (original) */
+
+
+.readings-table-compact thead th {
+  padding: 6px 8px !important;
+  font-size: 11px;
+  font-weight: 600;
+  background: #f8f8f8;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.readings-table-compact tbody td {
+  padding: 4px 8px !important;
+  line-height: 1.3;
+}
+
+.readings-table-compact .uk-badge {
+  padding: 2px 6px;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.readings-table-compact .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.readings-table-compact .status-active {
+  background: #32d296;
+  color: white;
+}
+
+.readings-table-compact .status-paused {
+  background: #999;
+  color: white;
+}
+
+.readings-table-compact tbody tr:hover {
+  background: #f5f5f5;
+}
+
+
+
+

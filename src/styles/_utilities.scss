@@ -1,0 +1,84 @@
+@use 'variables' as *;
+
+// Utility classes para mejoras visuales
+
+// Smooth scrolling
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+// Hover effects
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Fade animations
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Mejoras de sombras
+.shadow-sm {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.shadow-lg {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.shadow-xl {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+// Responsive text sizes
+.text-responsive {
+  font-size: 1rem;
+  
+  @media (min-width: 1366px) {
+    font-size: 1.1rem;
+  }
+  
+  @media (min-width: 1920px) {
+    font-size: 1.25rem;
+  }
+}
+
+// Spacing utilities para diferentes pantallas
+.spacing-responsive {
+  padding: 1rem;
+  
+  @media (min-width: 1366px) {
+    padding: 1.5rem;
+  }
+  
+  @media (min-width: 1920px) {
+    padding: 2rem;
+  }
+}
+

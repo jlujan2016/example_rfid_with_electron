@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Iniciar Sesión - ONPE</title>
+  <link rel="stylesheet" href="styles/login.css">
+  <script src="js/login-fallback.js"></script>
+</head>
+<body>
+  <div class="mobile-login">
+    <button class="settings-btn" title="Configuración">⚙️</button>
+    <div class="mobile-card">
+      <!-- <img class="logo" src="img/logo-onpe.svg" alt="ONPE" /> -->
+      <img class="logo" src="img/glefperu.png" alt="GLEF" />
+      <h2 class="title" style="margin-bottom: 25px">Iniciar Sesión</h2>
+
+      <form id="login-form" class="login-form">
+        <div class="input-group">
+          <input id="username" name="username" type="email" placeholder="Usuario" required autocomplete="username">
+        </div>
+
+        <div class="input-group password-group">
+          <input id="password" name="password" type="password" placeholder="Contraseña" required autocomplete="current-password">
+          <button type="button" id="toggle-pass" class="eye-btn" aria-label="Mostrar contraseña">👁️</button>
+        </div>
+
+        <button id="login-button" class="btn-primary" style="margin-top:25px" type="button">Iniciar sesión</button>
+
+        <div id="login-error"></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

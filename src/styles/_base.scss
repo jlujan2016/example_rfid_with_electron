@@ -1,0 +1,775 @@
+@use 'variables' as *;
+
+
+
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Bold.eot');
+    src: local('Helvetica Neue Bold'), local('HelveticaNeue-Bold'),
+        url('../fonts/helvetica/HelveticaNeue-Bold.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Bold.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Bold.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-BoldItalic.eot');
+    src: local('Helvetica Neue Bold Italic'), local('HelveticaNeue-BoldItalic'),
+        url('../fonts/helvetica/HelveticaNeue-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-BoldItalic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-BoldItalic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Heavy.eot');
+    src: local('Helvetica Neue Heavy'), local('HelveticaNeue-Heavy'),
+        url('../fonts/helvetica/HelveticaNeue-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Heavy.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Heavy.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Black.eot');
+    src: local('Helvetica Neue Black'), local('HelveticaNeue-Black'),
+        url('../fonts/helvetica/HelveticaNeue-Black.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Black.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Black.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-HeavyItalic.eot');
+    src: local('Helvetica Neue Heavy Italic'), local('HelveticaNeue-HeavyItalic'),
+        url('../fonts/helvetica/HelveticaNeue-HeavyItalic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-HeavyItalic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-HeavyItalic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-HeavyItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-BlackItalic.eot');
+    src: local('Helvetica Neue Black Italic'), local('HelveticaNeue-BlackItalic'),
+        url('../fonts/helvetica/HelveticaNeue-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-BlackItalic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-BlackItalic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Roman.eot');
+    src: local('Helvetica Neue Roman'), local('HelveticaNeue-Roman'),
+        url('../fonts/helvetica/HelveticaNeue-Roman.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Roman.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Roman.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Roman.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Medium.eot');
+    src: local('Helvetica Neue Medium'), local('HelveticaNeue-Medium'),
+        url('../fonts/helvetica/HelveticaNeue-Medium.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Medium.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Medium.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-MediumItalic.eot');
+    src: local('Helvetica Neue Medium Italic'), local('HelveticaNeue-MediumItalic'),
+        url('../fonts/helvetica/HelveticaNeue-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-MediumItalic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-MediumItalic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-LightItalic.eot');
+    src: local('Helvetica Neue Light Italic'), local('HelveticaNeue-LightItalic'),
+        url('../fonts/helvetica/HelveticaNeue-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-LightItalic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-LightItalic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Italic.eot');
+    src: local('Helvetica Neue Italic'), local('HelveticaNeue-Italic'),
+        url('../fonts/helvetica/HelveticaNeue-Italic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Italic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Italic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Light.eot');
+    src: local('Helvetica Neue Light'), local('HelveticaNeue-Light'),
+        url('../fonts/helvetica/HelveticaNeue-Light.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Light.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Light.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-UltraLight.eot');
+    src: local('Helvetica Neue Ultra Light'), local('HelveticaNeue-UltraLight'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLight.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLight.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLight.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-Thin.eot');
+    src: local('Helvetica Neue Thin'), local('HelveticaNeue-Thin'),
+        url('../fonts/helvetica/HelveticaNeue-Thin.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-Thin.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-Thin.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-ThinItalic.eot');
+    src: local('Helvetica Neue Thin Italic'), local('HelveticaNeue-ThinItalic'),
+        url('../fonts/helvetica/HelveticaNeue-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-ThinItalic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-ThinItalic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/helvetica/HelveticaNeue-UltraLightItalic.eot');
+    src: local('Helvetica Neue Ultra Light Italic'), local('HelveticaNeue-UltraLightItalic'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLightItalic.woff2') format('woff2'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLightItalic.woff') format('woff'),
+        url('../fonts/helvetica/HelveticaNeue-UltraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+
+
+
+
+html {
+  font-size: 15px; /* This is the default in most browsers, but explicitly setting it is good practice */
+  font-family: 'Helvetica Neue';
+  scroll-behavior: smooth;
+  
+  @media (min-width: 1366px) {
+    font-size: 16px;
+  }
+  
+  @media (min-width: 1920px) {
+    font-size: 17px;
+  }
+}
+
+body{
+  padding-top: 0!important;
+
+}
+
+.uk-icon-button {
+  width: 30px;
+  height: 30px;
+}
+
+ .uk-grid-row-small>.uk-grid-margin, .uk-grid-small>.uk-grid-margin {
+    margin-top: 7px;
+    
+    @media (min-width: 1366px) {
+      margin-top: 10px;
+    }
+    
+    @media (min-width: 1920px) {
+      margin-top: 12px;
+    }
+}
+
+// .uk-game-section{
+//   background: #00356B;
+//   background: linear-gradient(90deg, rgba(5, 173, 108, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(24, 158, 206, 1) 100%);
+// }
+
+.uk-game-section {
+  background: #00356B;
+  background: linear-gradient(270deg, #00356B, #00356B, #066e94);
+  background-size: 300% 300%;
+  -webkit-animation: bganimation 6s ease infinite;
+  -moz-animation: bganimation 6s ease infinite;
+  animation: bganimation 6s ease infinite;
+}
+
+@-webkit-keyframes bganimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes bganimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes bganimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.uk-btn-welcome-start{
+  box-shadow: 0 0 0 #fff;
+  animation: pulse 2s infinite;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 #fff;
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 50px rgba(204,169,44, 0);
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+  }
+}
+
+
+#preloader {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid $secondary-color;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0%   { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+
+
+.uk-height-1-1{
+  height: 100%;
+}
+
+.uk-button{
+  border-radius: 20px;
+  text-transform: initial;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+ 
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &.uk-button-large{
+    border-radius: 40px;
+    font-size: 1.5rem;
+    line-height: 3.5rem;
+    padding-right: 4rem;
+    padding-left: 4rem;
+    
+    @media (min-width: 1366px) {
+      border-radius: 45px;
+      font-size: 1.6rem;
+      line-height: 3.8rem;
+      padding-right: 4.5rem;
+      padding-left: 4.5rem;
+    }
+    
+    @media (min-width: 1920px) {
+      border-radius: 50px;
+      font-size: 1.8rem;
+      line-height: 4.2rem;
+      padding-right: 5rem;
+      padding-left: 5rem;
+    }
+  }
+  
+  &.uk-button-primary {
+    background: $secondary-color;
+    &:hover{
+      background: $secondary-color;
+    }
+  }
+}
+.uk-text-white{
+  color: #fff !important;
+}
+.uk-section-default{
+  overflow: hidden;
+}
+
+/* Mejoras para Drag & Drop en dispositivos táctiles */
+body.dragging {
+  overflow: hidden; /* Prevenir scroll durante el drag */
+  touch-action: none; /* Prevenir zoom y scroll en touch */
+}
+
+.uk-quiz-group{
+  h1{
+    font-size: 2.5rem;
+    font-weight: 600;
+    max-width: 90%;
+    margin: 0 auto;
+    margin-bottom: 3.5rem;
+    
+    @media (min-width: 1366px) {
+      font-size: 2.8rem;
+      max-width: 85%;
+      margin-bottom: 4rem;
+    }
+    
+    @media (min-width: 1920px) {
+      font-size: 3.2rem;
+      max-width: 80%;
+      margin-bottom: 4.5rem;
+    }
+  }
+}
+
+.uk-btn-answer{
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  opacity: 1; // Visible por defecto
+  min-width: 19rem;
+  &.uk-button-large{
+    border-radius: 60px;
+    font-size: 2.5rem;
+    line-height: 2.6rem;
+    padding-right: 4rem;
+    padding-left: 4rem;
+    margin-bottom: 0.8rem;
+    max-width: 80%;
+    padding-bottom: 1.1rem;
+    padding-top: 1.1rem;
+    width: 80%;
+  }
+  
+  
+  &:disabled {
+    cursor: not-allowed;
+  }
+  
+  &.uk-btn-answer-selected{
+    background-color: #189ece !important;
+    color: #fff !important;
+    box-shadow: 0 0 20px rgba(24, 158, 206, 0.5);
+    transform: scale(1.02);
+    opacity: 1 !important; // Asegurar visibilidad
+    animation: none !important; // Cancelar animación inicial si existe
+  }
+
+  &.uk-btn-answer-success{ 
+    background-color: #99CA3B;
+    color: #fff;
+    opacity: 1 !important; // Asegurar visibilidad
+    animation: pulse-success 0.6s ease-in-out !important; // Solo esta animación
+    &:hover{
+      background-color: #99CA3B;
+      color: #fff;
+    }
+  }
+
+  &.uk-btn-answer-error{
+    background-color: #226576;
+    color: #fff;
+    opacity: 1 !important; // Asegurar visibilidad
+    animation: none !important; // Sin animación
+    &:hover{
+      background-color: #226576;
+      color: #fff;
+    }
+  }
+  
+  &.uk-btn-answer-disabled {
+    opacity: 0.5 !important; // Opacidad específica para deshabilitado
+    cursor: not-allowed;
+    animation: none; // No animar cuando está deshabilitado
+  }
+}
+
+
+.uk-animation-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes pulse-success {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+// Estilos para el sistema de quiz
+.uk-quiz-group {
+  position: relative;
+  // min-height: 400px; // Mantener altura mínima para evitar saltos
+}
+
+.uk-quiz-item {
+  transition: opacity 0.3s ease-in-out;
+  
+  // Los botones siempre visibles sin animaciones
+  .uk-btn-answer {
+    opacity: 1;
+  }
+  
+  &:not(:first-child) {
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  // Animación de entrada para nuevas preguntas
+  &.quiz-entering {
+    animation: slideInFromRight 0.3s ease-out;
+  }
+
+  // Animación de salida para preguntas completadas
+  &.quiz-leaving {
+    animation: slideOutToLeft 0.3s ease-in;
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+// Indicador de progreso para el quiz
+.uk-quiz-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00356B, #00356B, #189ece);
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+}
+
+// Contador de tiempo restante
+.uk-quiz-timer {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+
+  &.timer-warning {
+    background: rgba(255, 165, 0, 0.8);
+    animation: pulse-warning 1s infinite;
+  }
+
+  &.timer-critical {
+    background: rgba(255, 0, 0, 0.8);
+    animation: pulse-critical 0.5s infinite;
+  }
+}
+
+@keyframes pulse-warning {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes pulse-critical {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+
+
+
+
+/* Estilos para el mensaje de agradecimiento */
+.uk-quiz-thanks {
+  animation: fadeInScale 0.8s ease-out;
+}
+
+.uk-thanks-content {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.uk-thanks-icon {
+  animation: bounceIn 1s ease-out 0.3s both;
+}
+
+.uk-thanks-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 1rem;
+  animation: slideInUp 0.6s ease-out 0.5s both;
+}
+
+.uk-thanks-message {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  line-height: 1.6;
+  animation: slideInUp 0.6s ease-out 0.7s both;
+}
+
+.uk-thanks-logos {
+  animation: slideInUp 0.6s ease-out 0.9s both;
+}
+
+.uk-thanks-restart {
+  animation: slideInUp 0.6s ease-out 1.1s both;
+}
+
+.uk-thanks-stats {
+  animation: slideInUp 0.6s ease-out 0.6s both;
+}
+
+
+
+
+.uk-stats-score {
+  // background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+  // border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.uk-score-text {
+  display: block;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
+  font-weight: normal;
+}
+
+.uk-score-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.uk-score-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.uk-score-percentage {
+  font-size: 1.8rem;
+  font-weight: bold;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  background: linear-gradient(45deg, #00356B, #00356B);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.uk-score-percentage.score-excellent {
+  background: linear-gradient(45deg, #00356B, #00356B);
+}
+
+.uk-score-percentage.score-good {
+  background: linear-gradient(45deg, #00356B, #189ece);
+}
+
+.uk-score-percentage.score-average {
+  background: linear-gradient(45deg, #ffa500, #ff8c00);
+}
+
+.uk-score-percentage.score-poor {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+}
+
+
+/* Animaciones para el mensaje de agradecimiento */
+@keyframes backInRight {
+  0% {
+    transform: translateX(2000px) scale(0.7);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(0) scale(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.user-details{
+  .menu-logo{
+    height: 40px;
+     @media (min-width: 1366px) {
+      height: 45px;
+    }
+  }
+}
+
+.uk-table-result-arco{
+  td{
+    padding: 2px 2px !important;
+    font-size: 12px;
+  }
+}
+
+#arcos-live-readings-content, .uk-overflow-table-arco-result{
+  height: 52vh;
+  overflow-y: auto;
+}
+/*# sourceMappingURL=main.css.map */

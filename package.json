@@ -1,0 +1,18 @@
+{
+  "name": "onpe-antenas-app",
+  "version": "1.2.9",
+  "author": {
+    "name": "Ahiezer Julca Blas",
+    "email": "ajulcab@crackti.com"
+  },
+  "license": "LGPL-3.0",
+  "description": "Desarrollado por CRACKTI",
+  "main": "setup.js",
+  "homepage": "./",
+  "dependencies": {
+    "electron-settings": "^4.0.4",
+    "electron-updater": "^6.1.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
+  }
+}
