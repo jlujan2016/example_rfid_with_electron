@@ -57,6 +57,22 @@ const defaultConfig = {
             min: 0
         }
     }
+
+        ,
+
+    gpio: {
+    habilitado: true,
+
+    // Pin del UR4 (GPIO interno del lector)
+    pin: 1,
+
+    // edge = detecta cambio (recomendado RFID)
+    // level = estado continuo (no recomendado aquí)
+    modo: 'edge',
+
+    // anti rebote en ms
+    debounceMs: 300
+    }
 };
 
 // Cargar configuración desde electron-settings

@@ -5,13 +5,14 @@
 const net = require('net');
 const http = require('http');
 const socketIo = require('socket.io');
+//const UR4 = require('./ur4');
 const antenaConfig = require('./config');
 const { FrameParser, Parsers } = require('./nodejs-uhf-commands/protocol-builder');
 const { Commands } = require('./nodejs-uhf-commands/commands');
 const { obtenerConfiguracionDistancia } = require('./nodejs-uhf-commands/utils');
 
 class RFIDService {
-  constructor() {
+  constructor(ur4Instance) {
     this.readerClient = null;
     this.io = null;
     this.httpServer = null;
@@ -20,6 +21,12 @@ class RFIDService {
     this.parser = null;
     this.isHardwareConnected = false; // Estado de conexión del hardware
     this._cacheCleanupInterval = null;
+
+    // 🟢 AQUÍ VA LA INYECCIÓN UR4
+    this.ur4 = ur4Instance;
+
+        // 🧪 DEBUG (AQUÍ VA)
+    console.log("UR4 conectado:", !!this.ur4);
 
     // Límites para evitar fugas de memoria
     this.MAX_CACHE_SIZE = 5000;       // Máximo de entradas en tagCache
@@ -202,7 +209,8 @@ class RFIDService {
 
     this.readerClient.on('data', (data) => {
       const frames = this.parser.addData(data);
-      
+  
+      let lastGPIO = 0;
       frames.forEach(frame => {
         // 0x83 = Respuesta de Continuous Inventory (comando UR4 SDK)
         if (frame.command === 0x83) {
@@ -219,6 +227,7 @@ class RFIDService {
             console.log(`│ RSSI   : ${tag.rssi} dBm`);
             console.log(`│ Antena : ${tag.antenna}`);
             console.log(`│ Lecturas: ${count}`);
+            console.log("hola");
             console.log(`│ Tiempo : ${new Date().toLocaleTimeString()}`);
             console.log('└────────────────────────────────────────\n');
             
@@ -228,6 +237,33 @@ class RFIDService {
             }
           }
         }
+
+            // 🟢 GPIO SENSOR (AQUÍ ESTABA FALTANDO)
+              
+              else if (frame.command === 0x8D) {
+
+/*                   const gpioValue = frame.data[0];
+                  if (gpioValue === 1 && lastGPIO === 0) {
+                      console.log("🚀 SENSOR ACTIVADO");
+
+                      this.ur4?.handleGPIO({ gpio1: 1 });
+                  }
+                  lastGPIO = gpioValue; */
+                      console.log("RAW GPIO DATA:", frame.data);
+
+                      for (let i = 0; i < frame.data.length; i++) {
+                          console.log(`Byte ${i}:`, frame.data[i]);
+                      }
+
+              }
+        
+            // 🔵 DEBUG SOLO PARA OTROS COMANDOS 
+                else {
+                    // DEBUG: Solo mostrar comandos que NO sean 0x83 (para evitar spam)
+                    //GPIO = comando 0x8D
+                    console.log(`[DEBUG] Comando: 0x${frame.command.toString(16).toUpperCase().padStart(2, '0')} | Length: ${frame.data.length} | Data: ${frame.data.toString('hex').toUpperCase()}`);
+                }
+
       });
     });
 
