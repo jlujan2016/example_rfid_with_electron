@@ -17,7 +17,7 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    title: 'ONPE - Antenas App',
+    title: 'GLEF - Antenas App',
     width: 1366,
     height: 768,
     icon: app.isPackaged
