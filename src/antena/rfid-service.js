@@ -21,6 +21,8 @@ class RFIDService {
     this.parser = null;
     this.isHardwareConnected = false; // Estado de conexión del hardware
     this._cacheCleanupInterval = null;
+    this.lastGPIO = null;
+    this.lastGPIOTimestamp = 0;
 
     // 🟢 AQUÍ VA LA INYECCIÓN UR4
     this.ur4 = ur4Instance;
@@ -204,13 +206,16 @@ class RFIDService {
         this.readerClient.write(startInventoryCmd);
         console.log('\n✓ Configuración completa - el lector enviará tags automáticamente...');
         console.log('━'.repeat(60) + '\n');
+          // 👇 🔥 AQUÍ VA EL POLLING GPIO
+        console.log("🟢 Iniciando polling GPIO...");
+        this.startGPIOPolling();
       }, 2000);
     });
 
     this.readerClient.on('data', (data) => {
       const frames = this.parser.addData(data);
   
-      let lastGPIO = 0;
+      //let lastGPIO = 0;
       frames.forEach(frame => {
         // 0x83 = Respuesta de Continuous Inventory (comando UR4 SDK)
         if (frame.command === 0x83) {
@@ -238,24 +243,40 @@ class RFIDService {
           }
         }
 
-            // 🟢 GPIO SENSOR (AQUÍ ESTABA FALTANDO)
+            // 🟢 GPIO SENSOR (AQUÍ ESTABA FALTANDO) 0x8D
               
-              else if (frame.command === 0x8D) {
+else if (frame.command === 0x8D) {
 
-/*                   const gpioValue = frame.data[0];
-                  if (gpioValue === 1 && lastGPIO === 0) {
-                      console.log("🚀 SENSOR ACTIVADO");
+const gpioValue = frame.data[0];
 
-                      this.ur4?.handleGPIO({ gpio1: 1 });
-                  }
-                  lastGPIO = gpioValue; */
-                      console.log("RAW GPIO DATA:", frame.data);
+console.log("GPIO RAW VALUE:", gpioValue);
 
-                      for (let i = 0; i < frame.data.length; i++) {
-                          console.log(`Byte ${i}:`, frame.data[i]);
-                      }
+console.log("CMD:", frame.command.toString(16));
 
-              }
+const encendida = (gpioValue & 0x01) === 0; // bit 0 activo
+  if (encendida !== this.lightState) {
+    this.lightState = encendida;
+
+    console.log(encendida ? "💡 LUZ ENCENDIDA" : "🌑 LUZ APAGADA");
+
+    this.io?.emit("light-status", { encendida });
+  }
+
+console.log("BINARIO:", gpioValue.toString(2).padStart(8, '0'));
+
+console.log("BIT CHECK:", {
+  bit0: gpioValue & 0x01
+});
+
+if (encendida !== this.lightState) {
+  this.lightState = encendida;
+
+  console.log(encendida ? "💡 LUZ ENCENDIDA" : "🌑 LUZ APAGADA");
+
+  this.io?.emit("light-status", { encendida });
+}
+
+}
         
             // 🔵 DEBUG SOLO PARA OTROS COMANDOS 
                 else {
@@ -296,7 +317,29 @@ class RFIDService {
       }
     });
   }
+    // 👇 PONLO AQUÍ (NUEVA FUNCIÓN)
+  startGPIOPolling() {
+    if (this.gpioInterval) return;
+    this.gpioInterval = setInterval(() => {
 
+      // if (this.readerClient && !this.readerClient.destroyed) {
+      //   const cmd = Commands.getGPIO(); 
+      //   // ⚠️ este comando debe existir
+      //   this.readerClient.write(cmd);
+      // }
+
+    if (!this.readerClient || this.readerClient.destroyed) return;
+
+    try {
+      // ⚠️ ESTE COMANDO LO DEFINES TÚ (igual que en C#)
+      const cmd = Buffer.from([0xAA, 0x8D, 0x8E]); 
+      this.readerClient.write(cmd);
+
+    } catch (err) {
+      console.log("GPIO polling error:", err.message);
+    }
+    }, 300); // cada 300ms
+  }
   /**
    * Detener el lector RFID
    */
@@ -320,6 +363,10 @@ class RFIDService {
       }
     } else {
       this.readerClient = null;
+    }
+    if (this.gpioInterval) {
+      clearInterval(this.gpioInterval);
+      this.gpioInterval = null;
     }
   }
 

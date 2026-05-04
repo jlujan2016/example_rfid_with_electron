@@ -121,6 +121,15 @@ const Commands = {
     },
     
     /**
+    * Construye comando Get GPIO
+    * (código típico en UR4: 0x8D o 0x8E dependiendo modelo)
+    */
+    getGPIO() {
+    return buildCommand(0x8D, []);
+    //return buildCommand(0x8E, []);
+    },
+
+    /**
      * Construye comando Set Power
      * @param {number} power - Potencia en dBm (5-30)
      */
